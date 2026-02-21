@@ -18,7 +18,6 @@ body {
     color:#fff;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     text-align:center;
-    cursor: pointer; /* মাউস নিলে পয়েন্টার দেখাবে যাতে ইউজার বুঝতে পারে ক্লিক করা যাবে */
 }
 h1 {
     font-size:3rem;
@@ -38,18 +37,93 @@ p {
     animation:spin 4s linear infinite;
     margin-bottom:30px;
 }
-.click-hint {
-    font-size: 1rem;
-    margin-top: 30px;
-    opacity: 0.8;
-    background: rgba(0,0,0,0.2);
-    padding: 8px 15px;
-    border-radius: 20px;
-}
 @keyframes spin {
     0% { transform:rotate(0deg); }
     100% { transform:rotate(360deg); }
 }
+
+/* ভয়েস মেসেজ বক্সের ডিজাইন (WhatsApp/Messenger স্টাইল) */
+.voice-message-box {
+    background-color: #ffffff;
+    border-radius: 30px;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 40px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    width: 320px;
+    max-width: 90%;
+}
+
+.play-btn {
+    background-color: #e5322d;
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.play-btn:active {
+    transform: scale(0.9);
+}
+
+.play-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: #ffffff;
+}
+
+/* ফেইক ওয়েভফর্ম (Voice bars) */
+.waveform {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    flex-grow: 1;
+    height: 30px;
+}
+
+.waveform .bar {
+    width: 4px;
+    background-color: #d1d1d1;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.waveform.playing .bar {
+    background-color: #e5322d;
+    animation: bounce 1s infinite alternate;
+}
+
+/* ওয়েভফর্ম অ্যানিমেশন */
+@keyframes bounce {
+    0% { transform: scaleY(0.5); }
+    100% { transform: scaleY(1.2); }
+}
+
+/* বিভিন্ন বারের ভিন্ন ভিন্ন উচ্চতা */
+.bar:nth-child(1) { height: 40%; animation-delay: 0.1s;}
+.bar:nth-child(2) { height: 70%; animation-delay: 0.2s;}
+.bar:nth-child(3) { height: 50%; animation-delay: 0.3s;}
+.bar:nth-child(4) { height: 100%; animation-delay: 0.4s;}
+.bar:nth-child(5) { height: 60%; animation-delay: 0.5s;}
+.bar:nth-child(6) { height: 80%; animation-delay: 0.6s;}
+.bar:nth-child(7) { height: 40%; animation-delay: 0.7s;}
+.bar:nth-child(8) { height: 90%; animation-delay: 0.8s;}
+.bar:nth-child(9) { height: 50%; animation-delay: 0.9s;}
+.bar:nth-child(10) { height: 30%; animation-delay: 1.0s;}
+
+.voice-time {
+    color: #888;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
 @media (max-width:768px){
     h1{font-size:2.2rem;}
     p{font-size:1.4rem;}
@@ -72,26 +146,54 @@ p {
 <h1>ওয়েবসাইটের কাজ চলছে</h1>
 <p>"শীঘ্রই চলে আসবে ইনশাআল্লাহ"</p>
 
-<p class="click-hint" id="hintText">সাউন্ড অন করতে স্ক্রিনের যেকোনো জায়গায় ক্লিক করুন 🎵</p>
+<div class="voice-message-box">
+    <button id="playBtn" class="play-btn">
+        <svg id="playIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg>
+    </button>
+    
+    <div class="waveform" id="waveform">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </div>
+    
+    <span class="voice-time">0:00</span>
+</div>
 
-<audio id="bgSound" loop playsinline>
-    <source src="sound.wav" type="audio/wav">
-</audio>
+<audio id="bgSound" playsinline>
+    <source src="sound.wav" type="audio/wav"> </audio>
 
 <script>
 const audio = document.getElementById("bgSound");
-const hintText = document.getElementById("hintText");
+const playBtn = document.getElementById("playBtn");
+const waveform = document.getElementById("waveform");
+const playIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg>`;
+const pauseIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M48 64C21.5 64 0 85.5 0 112V400c0 26.5 21.5 48 48 48H80c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H48zm192 0c-26.5 64-48 85.5-48 112V400c0 26.5 21.5 48 48 48h32c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H240z"/></svg>`;
 
-// স্ক্রিনের যেকোনো জায়গায় ক্লিক করলে অডিও প্লে হবে
-document.body.addEventListener('click', function() {
+// বাটনে ক্লিক করলে প্লে বা পজ হবে
+playBtn.addEventListener('click', function() {
     if (audio.paused) {
-        audio.play().then(() => {
-            // সাউন্ড প্লে শুরু হলে ক্লিক মেসেজটি লুকিয়ে যাবে
-            hintText.style.display = 'none';
-        }).catch((error) => {
-            console.log("Play failed: ", error);
-        });
+        audio.play();
+        playBtn.innerHTML = pauseIconSVG; // আইকন পরিবর্তন হয়ে পজ হবে
+        waveform.classList.add('playing'); // ওয়েভফর্ম লাফাতে শুরু করবে
+    } else {
+        audio.pause();
+        playBtn.innerHTML = playIconSVG; // আইকন পরিবর্তন হয়ে প্লে হবে
+        waveform.classList.remove('playing'); // ওয়েভফর্ম থেমে যাবে
     }
+});
+
+// অডিও শেষ হলে আবার আগের অবস্থায় ফিরে আসবে
+audio.addEventListener('ended', function() {
+    playBtn.innerHTML = playIconSVG;
+    waveform.classList.remove('playing');
 });
 </script>
 
