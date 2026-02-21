@@ -18,6 +18,7 @@ body {
     color:#fff;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     text-align:center;
+    cursor: pointer; /* মাউস নিলে পয়েন্টার দেখাবে যাতে ইউজার বুঝতে পারে ক্লিক করা যাবে */
 }
 h1 {
     font-size:3rem;
@@ -36,6 +37,14 @@ p {
     fill:#fff;
     animation:spin 4s linear infinite;
     margin-bottom:30px;
+}
+.click-hint {
+    font-size: 1rem;
+    margin-top: 30px;
+    opacity: 0.8;
+    background: rgba(0,0,0,0.2);
+    padding: 8px 15px;
+    border-radius: 20px;
 }
 @keyframes spin {
     0% { transform:rotate(0deg); }
@@ -63,13 +72,27 @@ p {
 <h1>ওয়েবসাইটের কাজ চলছে</h1>
 <p>"শীঘ্রই চলে আসবে ইনশাআল্লাহ"</p>
 
-<audio id="bgSound" autoplay loop playsinline>
+<p class="click-hint" id="hintText">সাউন্ড অন করতে স্ক্রিনের যেকোনো জায়গায় ক্লিক করুন 🎵</p>
+
+<audio id="bgSound" loop playsinline>
     <source src="sound.wav" type="audio/wav">
 </audio>
 
 <script>
 const audio = document.getElementById("bgSound");
-audio.play().catch(()=>console.log("Autoplay blocked by browser"));
+const hintText = document.getElementById("hintText");
+
+// স্ক্রিনের যেকোনো জায়গায় ক্লিক করলে অডিও প্লে হবে
+document.body.addEventListener('click', function() {
+    if (audio.paused) {
+        audio.play().then(() => {
+            // সাউন্ড প্লে শুরু হলে ক্লিক মেসেজটি লুকিয়ে যাবে
+            hintText.style.display = 'none';
+        }).catch((error) => {
+            console.log("Play failed: ", error);
+        });
+    }
+});
 </script>
 
 </body>
